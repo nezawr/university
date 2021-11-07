@@ -29,7 +29,7 @@ class Assignment2(object):
                 X_loc.append(True)
             else:
                 X_loc.append(False)
-        Y = np.array([self.get_sample(X_loc[i]) for i in range(m)])
+        Y = np.array([self.get_sample(X_loc[i]) for i in range(m)]).reshape(m,)
         return np.column_stack((X, Y))
 
 
@@ -48,7 +48,7 @@ class Assignment2(object):
             and the average true error for each m in the range accordingly.
         """
         sample_sizes = np.arange(m_first, m_last + 1, step)
-        n_steps = len(sample_sizes)
+        n_steps = sample_sizes.shape[0]
         empirical_errors = np.zeros(n_steps)
         true_errors = np.zeros(n_steps)
         for i in range(n_steps):
@@ -73,6 +73,8 @@ class Assignment2(object):
         plt.ylabel("Error")
         plt.show()
 
+        return np.stack((empirical_errors, true_errors))
+
 
     def experiment_k_range_erm(self, m, k_first, k_last, step):
         """Finds the best hypothesis for k= 1,2,...,10.
@@ -84,11 +86,11 @@ class Assignment2(object):
 
         Returns: The best k value (an integer) according to the ERM algorithm.
         """
-        # TODO: Implement the loop
+        
         K = np.arange(k_first, k_last + 1, step)
         true_errors = np.zeros(K.shape[0])
         empirical_errors = np.zeros(K.shape[0])
-        sample = self.get_sample(m)
+        sample = self.sample_from_D(m)
         xs = sample[:,0]
         ys = sample[:,1]
         for i in range(K.shape[0]):
@@ -103,7 +105,6 @@ class Assignment2(object):
         plt.ylabel("Error")
         plt.show()
 
-        print(K[np.argmin(empirical_errors)])
         return K[np.argmin(empirical_errors)]
          
 
@@ -121,13 +122,15 @@ class Assignment2(object):
         K = np.arange(k_first, k_last + 1, step)
         true_errors = np.zeros(K.shape[0])
         empirical_errors = np.zeros(K.shape[0])
-        sample = self.get_sample(m)
+        sample = self.sample_from_D(m)
         xs = sample[:,0]
         ys = sample[:,1]
         #Delta is given
         delta = 0.1
-        penalties = self.get_penalty(K, m, delta)
+        penalties = self.get_penalties(K, m, delta)
+        print(f"Total Iterations: {K.shape[0]}")
         for i in range(K.shape[0]):
+            print(f"Iteration: {i+1}")
             ERM_intervals, error_count = intervals.find_best_interval(xs, ys, K[i])
             true_errors[i] = self.true_error(ERM_intervals)
             empirical_errors[i] = error_count/m
@@ -152,7 +155,7 @@ class Assignment2(object):
         """
         
         K = []
-        sample = self.get_sample(m)
+        sample = self.sample_from_D(m)
         np.random.shuffle(sample)
         validate = sample[:int(m/5)]
         train = np.array(sorted(sample[int(m/5)], key=lambda x:x[0]))
@@ -191,6 +194,7 @@ class Assignment2(object):
             for seg2 in likely0:
                 result += self.get_intersection(interval, seg2) * (1 - p0)
         
+        #Expected Error when hypothesis returns 0
         for interval in intervals0:
             for seg1 in likely1:
                 result += self.get_intersection(interval, seg1) * p1
@@ -200,7 +204,7 @@ class Assignment2(object):
         
     def get_intersection(self, interval1, interval2):
         # Case1 No intersection
-        if (interval1[1] <= interval2[0]) or (interval1[0] >= interval2[0]):
+        if (interval1[1] <= interval2[0]) or (interval1[0] >= interval2[1]):
             return 0.0
         #Case 2 + 3: One is a subset of the other
         elif (interval1[0] >= interval2[0]) and (interval1[1] <= interval2[1]):
@@ -229,7 +233,7 @@ class Assignment2(object):
         for i in range(len(x)):
             counter = 0
             for interval in intervals:
-               if interval[0] <= x[i] <= interval[1]:
+               if (interval[0] <= x[i] <= interval[1]):
                    counter += 1
                    break
             if (counter != y[i]):
@@ -242,7 +246,7 @@ class Assignment2(object):
 if __name__ == '__main__':
     ass = Assignment2()
     #ass.experiment_m_range_erm(10, 100, 5, 3, 100)
-    ass.experiment_k_range_erm(1500, 1, 10, 1)
+    #ass.experiment_k_range_erm(1500, 1, 10, 1)
     ass.experiment_k_range_srm(1500, 1, 10, 1)
-    ass.cross_validation(1500)
+    #ass.cross_validation(1500)
 
