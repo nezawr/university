@@ -1,5 +1,6 @@
 #################################
 # Your name:
+# Nazar Aburas
 #################################
 
 import numpy as np
@@ -125,12 +126,8 @@ class Assignment2(object):
         sample = self.sample_from_D(m)
         xs = sample[:,0]
         ys = sample[:,1]
-        #Delta is given
-        delta = 0.1
-        penalties = self.get_penalties(K, m, delta)
-        print(f"Total Iterations: {K.shape[0]}")
+        penalties = self.get_penalties(K, m)
         for i in range(K.shape[0]):
-            print(f"Iteration: {i+1}")
             ERM_intervals, error_count = intervals.find_best_interval(xs, ys, K[i])
             true_errors[i] = self.true_error(ERM_intervals)
             empirical_errors[i] = error_count/m
@@ -144,7 +141,6 @@ class Assignment2(object):
         plt.xlabel("k")
         plt.show()
 
-        print(K[np.argmin(penalties_with_empirical_errors)])
         return K[np.argmin(penalties_with_empirical_errors)]
 
     def cross_validation(self, m):
@@ -158,7 +154,7 @@ class Assignment2(object):
         sample = self.sample_from_D(m)
         np.random.shuffle(sample)
         validate = sample[:int(m/5)]
-        train = np.array(sorted(sample[int(m/5)], key=lambda x:x[0]))
+        train = np.array(sorted(sample[int(m/5):], key=lambda x:x[0]))
         xt = train[:,0]
         yt = train[:,1]
         xv = validate[:,0]
@@ -166,7 +162,7 @@ class Assignment2(object):
         for k in range(1,11):
             ERM_k_intervals, error_count = intervals.find_best_interval(xt, yt, k)
             K.append(self.get_validation_error(ERM_k_intervals, xv, yv))
-        print(np.argmin(K) + 1)
+       
         return np.argmin(K) + 1
 
     #################################
@@ -224,11 +220,13 @@ class Assignment2(object):
         else:
             return np.random.choice(a = [0.0, 1.0], size = 1, p = [0.9, 0.1])
 
-    def get_penalties(self, K, m, delta):
+    def get_penalties(self, K, m):
         #VCdim for Hk is 2k
-        return 2 * np.sqrt((2*K + np.log(2/delta)/m))
+        ret = (2*K + np.log(20))/m
+        return 2*np.sqrt(ret)
 
-    def get_validation_error(intervals, x, y):
+
+    def get_validation_error(self, intervals, x, y):
         error = 0.0
         for i in range(len(x)):
             counter = 0
@@ -245,8 +243,8 @@ class Assignment2(object):
 
 if __name__ == '__main__':
     ass = Assignment2()
-    #ass.experiment_m_range_erm(10, 100, 5, 3, 100)
-    #ass.experiment_k_range_erm(1500, 1, 10, 1)
+    ass.experiment_m_range_erm(10, 100, 5, 3, 100)
+    ass.experiment_k_range_erm(1500, 1, 10, 1)
     ass.experiment_k_range_srm(1500, 1, 10, 1)
-    #ass.cross_validation(1500)
+    ass.cross_validation(1500)
 
