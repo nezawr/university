@@ -3,5 +3,5 @@
 <p> Optimization for the Hinge loss with L2-regularization </p>
 <p> Accuracy as a function of eta</p>
 
-<h3> SGD for multi-class cross -entropy</h3>
+<h2> SGD for multi-class cross -entropy</h2>
  
