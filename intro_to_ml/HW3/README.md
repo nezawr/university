@@ -3,7 +3,7 @@
 <p> Optimization for the Hinge loss with L2-regularization </p>
 
 <p> Accuracy as a function of eta</p>
-![hw3_a](https://user-images.githubusercontent.com/35603177/142274489-081956c2-179a-48f8-8181-160a843c7843.png)
+![Alt text](/university/intro_to_ml/HW3/charts/img.jpg?raw=true "Optional Title")
 
 <h2> SGD for multi-class cross -entropy</h2>
  
