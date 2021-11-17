@@ -119,7 +119,7 @@ def calculate_loss(data, labels, w):
 def find_best_eta0(T, C):
     train_data, train_labels, validation_data, validation_labels, test_data, test_labels = helper_hinge()
     loss_avg = []
-    etas = np.arange(0.00001, 10, 0.01)
+    etas = np.arange(0.00001, 20, 0.1)
 
     for eta in etas:
         avg = 0
