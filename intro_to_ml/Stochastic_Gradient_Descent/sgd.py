@@ -1,5 +1,5 @@
 #################################
-# Your name:
+# Your name: Nazar Aburas
 #################################
 
 # Please import and use stuff only from the packages numpy, sklearn, matplotlib
@@ -71,7 +71,6 @@ def SGD_hinge(data, labels, C, eta_0, T):
     """
     Implements Hinge loss using SGD.
     """
-   
     # Here w_t is w_1
     w_t = np.zeros(data.shape[1])
     for t in range(1,T+1):
@@ -95,7 +94,7 @@ def SGD_ce(data, labels, eta_0, T):
     #Label classes are 0,1,...,9
     W = np.zeros((10, data.shape[1]))
     for t in range(1,T+1):
-        i = np.random.randint(data.shape[1])
+        i = np.random.randint(data.shape[0])
         x_i = data[i]
         y_i = labels[i]
         gradients = ce_gradient(W, x_i, y_i)
@@ -107,27 +106,6 @@ def SGD_ce(data, labels, eta_0, T):
 # Place for additional code
 
 #################################
-def ce_accuracy(data, labels, W):
-    loss = 0
-    for x_i, y_i in zip(data, labels):
-        prediction = np.argmax([W[i] * x_i for i in range(W.shape[0])])
-        if prediction != y_i:
-            loss += 1
-    return 1 - loss/data.shape[0]
-    
-def ce_gradient(W, x, y):
-    gradient = np.zeros((W.shape[0], W.shape[1]))
-    for k in range(W.shape[0]):
-        gradient[k] = ce_derivative(W, x, y, k)
-    return gradient
-
-def ce_derivative(W, x, y, k):
-    numerator = np.exp(np.dot(W[k], x))
-    denominator = sum([np.exp(np.dot(W[i], x)) for i in range(10)])
-    if k != y:
-        return (numerator/denominator)*x
-    return (numerator/denominator - 1)*x
-
 def hinge_accuracy(data, labels, w):
     n = data.shape[0]
     loss = 0
@@ -141,61 +119,127 @@ def hinge_accuracy(data, labels, w):
            loss += 1
     return 1 - loss/n 
 
-
-def hinge_optimal_eta(T, C, t_d, t_l, v_d, v_l):
-    train_data, train_labels, validation_data, validation_labels, test_data, test_labels = helper_hinge()
-    loss_avg = []
-    etas = np.arange(0.00001, 20, 0.01)
-
+def hinge_optimal_eta(T, C, train_data, train_labels, validation_data, validation_labels):
+    accuracy_avg = []
+    # Started search with log scale values
+    # etas = [10**-7, 10**-6, 10**-5, 10**-4, 10**-3, 10**-2, 10**-1, 10, 10**2 ,10**3, 10**4]
+    # Narrowed down search
+    etas = np.arange(0.00001, 10, 0.1)
     for eta in etas:
         avg = 0
         for t in range(10):
             w = SGD_hinge(train_data, train_labels, C, eta, T)
             avg += hinge_accuracy(validation_data, validation_labels, w)
-        loss_avg.append(avg/10)
+        accuracy_avg.append(avg/10)
 
-    plt.plot(etas, loss_avg, label="Eta Accuracy")
+    plt.plot(etas, accuracy_avg, label="Accuracy by Eta")
     plt.legend()
     plt.xlabel("Eta")
     plt.ylabel("Accuracy")
     plt.show()
     
-    return etas[np.argmin(loss_avg)]
+    return etas[np.argmax(accuracy_avg)]
 
 def hinge_optimal_c(T, op_eta, t_d, t_l, v_d, v_l):
-    loss = []
-    C = [10**-5, 10**-4, 10**-3, 10**-2, 10**-1, 10, 100 ,1000, 10000, 100000]
-    #C = np.arange(0.00001,10, 0.01)
+    accuracy = []
+    C = [10**-7, 10**-6, 10**-5, 10**-4, 10**-3, 10**-2, 10**-1, 10, 10**2 ,10**3, 10**4]
+    #C = np.arange(0.00001, 20, 0.1)
     for c in C:
-        l = 0
+        a = 0
         for i in range(10):
             w = SGD_hinge(t_d, t_l, c, op_eta, T)
-            l += hinge_accuracy(v_d, v_l, w)
-        loss.append(l/10)
+            a += hinge_accuracy(v_d, v_l, w)
+        accuracy.append(a/10)
     
-    plt.plot(C, loss, label="Accuracy by C")
+    plt.plot(C, accuracy, label="Accuracy by C")
     plt.legend()
     plt.xlabel("C")
     plt.ylabel("Accuracy")
     plt.show()
 
-    return C[np.argmin(loss)]
+    return C[np.argmax(accuracy)]
+
+def ce_accuracy(data, labels, W):
+    loss = 0
+    for x_i, y_i in zip(data, labels):
+        prediction = np.argmax(np.array([np.dot(W[i], x_i) for i in range(W.shape[0])]))
+        if prediction != int(y_i):
+            loss += 1
+    return 1 - loss/data.shape[0]
+    
+def ce_gradient(W, x, y):
+    gradient = np.zeros((W.shape[0], W.shape[1]))
+    for k in range(W.shape[0]):
+        gradient[k] = ce_derivative(W, x, y, k)
+    return gradient
+
+def ce_derivative(W, x, y, k):
+    #Log-sum-exp trick
+    A = np.array([np.dot(W[i], x) for i in range(W.shape[0])])
+    a_max = np.max(A)
+    lse = a_max + np.log(np.sum(np.exp(A - a_max)))
+    p = np.exp(A[k] - lse)
+    if k != int(y):
+        return (p)*x
+    return (p - 1)*x
+
+
+def ce_optimal_eta(T, t_d, t_l, v_d, v_l):
+    accuracy_avg = []
+    #etas = np.array([10**-8 ,10**-7, 10**-6, 10**-5 ,10**-4, 10**-3, 10**-2, 10**-1, 10**1, 10**2 ,10**3, 10**4, 10**5, 10**6, 10**7, 10**8])
+    etas = np.arange(0.000001,1, 0.01)
+    for eta in etas:
+        avg = 0
+        for t in range(10):
+            w = SGD_ce(t_d, t_l, eta, T)
+            avg += ce_accuracy(v_d, v_l, w)
+        accuracy_avg.append(avg/10)
+    
+    plt.plot(etas, accuracy_avg, label="Cross Entropy Eta Accuracy")
+    plt.legend()
+    plt.xlabel("Eta")
+    plt.ylabel("Accuracy")
+    plt.show()
+    
+    return etas[np.argmax(accuracy_avg)]
   
         
 if __name__ == '__main__':
-    train_data, train_labels, validation_data, validation_labels, test_data, test_labels = helper_hinge()
-    T = 1000
-    """C = 1
+    #SECTION 1
+    train_data_hinge, train_labels_hinge, validation_data_hinge, validation_labels_hinge, test_data_hinge, test_labels_hinge = helper_hinge()
+    T0 = 1000
+    C = 1
     #1.a
-    opt_eta = hinge_optimal_eta(T, C, train_data, train_labels, validation_data, validation_labels)
-    print(opt_eta)
+    opt_eta = hinge_optimal_eta(T0, C, train_data_hinge, train_labels_hinge, validation_data_hinge, validation_labels_hinge)
+    print(f"Optimal Hinge eta is: {opt_eta}")
     #1.b
-    #opt_c = hinge_optimal_c(T, opt_eta, train_data, train_labels, validation_data, validation_labels)
-    #print(op_c)
-    T = 2000
-    w = SGD_hinge(train_data, train_labels, opt_c, opt_eta, T)
-    plt.imshow(w, interpolation='nearest')
-    plt.show()"""
-    W = SGD_ce(train_data, train_labels, 0.01, 2000)
+    opt_eta = 0.70001
+    opt_c = hinge_optimal_c(T0, opt_eta, train_data_hinge, train_labels_hinge, validation_data_hinge, validation_labels_hinge)
+    print(f"Optimal Hinge C is: {opt_c}")
+    #1.c
+    T1 = 2000
+    w_hinge = SGD_hinge(train_data_hinge, train_labels_hinge, opt_c, opt_eta, T1)
+    hw = w_hinge.reshape((28,28))
+    plt.imshow(hw, interpolation='nearest')
+    plt.show()
+    #1.d
+    hinge_accuracy = hinge_accuracy(test_data_hinge, test_labels_hinge, w_hinge)
+    print(f"Hinge classifier test accuracy: {hinge_accuracy}")
+
+    #SECTION 2
+    T2 = 1000
+    train_data_ce, train_labels_ce, validation_data_ce, validation_labels_ce, test_data_ce, test_labels_ce = helper_ce()
+    ce_eta_opt = ce_optimal_eta(T2, train_data_ce, train_labels_ce, validation_data_ce, validation_labels_ce)
+    print(f"Optimal Cross Entropy eta is: {ce_eta_opt}")
+    T3 = 2000
+    w = SGD_ce(train_data_ce, train_labels_ce, ce_eta_opt, T3)
+    for i in range(10):
+        x = w[i].reshape((28,28))
+        plt.imshow(x, interpolation='nearest')
+        plt.show()
     
-    plt.plot()
+    cross_entropy_accuracy = ce_accuracy(test_data_ce, test_labels_ce, w)
+    print(f"Cross Entropy classifier test accuracy: {cross_entropy_accuracy}") 
+    
+    
+    
