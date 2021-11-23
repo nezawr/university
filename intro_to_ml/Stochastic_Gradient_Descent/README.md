@@ -14,36 +14,27 @@
 <h4> Accuracy as a function of eta on the validation set</b>:</h4>
 <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/sec2_optimaleta.png" alt="alt text" title="Eta" width="300" />
  
- <div class="row">
+<div class="row1">
   <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/0.png" style="width:100%">
-  </div>
- <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/2.png" alt="Forest" style="width:100%">
-  </div>
- <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/4.png" alt="Forest" style="width:100%">
-  </div>
- <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/6.png" alt="Forest" style="width:100%">
-  </div>
- <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/8.png" alt="Forest" style="width:100%">
+    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/0.png" alt="0" style="width:100%">
   </div>
   <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/1.png" alt="Forest" style="width:100%">
+    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/1.png" alt="1" style="width:100%">
   </div>
- <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/3.png" alt="Forest" style="width:100%">
+  <div class="column">
+    <img src="img_mountains.jpg" alt="Mountains" style="width:100%">
   </div>
- <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/5.png" alt="Forest" style="width:100%">
-  </div>
- <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/7.png" alt="Forest" style="width:100%">
-  </div>
- <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/9.png" alt="Forest" style="width:100%">
-  </div>
- 
 </div>
+<div class="row2">
+ 
+ </div>
+ <div class="row3">
+ 
+ </div>
+ <div class="row4">
+ 
+ </div>
+ <div class="row5">
+ 
+ </div>
+ 
