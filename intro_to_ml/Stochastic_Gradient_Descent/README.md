@@ -16,11 +16,6 @@
  
 <div class="row">
   <div class="column">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/0.png" width="200">
-    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/1.png" width="200">
-    <img src="falls2.jpg">
-    <img src="paris.jpg">
-    <img src="nature.jpg">
-    <img src="mist.jpg">
-    <img src="paris.jpg">
+    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/0.png" width="300">
+    <img src="https://github.com/nezawr/university/blob/main/intro_to_ml/Stochastic_Gradient_Descent/charts/section2_digits/1.png" width="300">
   </div>
